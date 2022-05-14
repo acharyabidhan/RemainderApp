@@ -3,22 +3,24 @@ from time import sleep, strftime
 from tkinter import ACTIVE, MULTIPLE, N, SW, IntVar, Checkbutton, Label, SE, Spinbox, S, CENTER, DISABLED, E, INSERT, SINGLE, TOP, W, Button, Entry, StringVar, Tk, Listbox, END, Text, LabelFrame
 from tkinter.font import NORMAL
 from numpy import save, load
-from os import system, path, listdir, remove
+from os import path, listdir, remove
 import pythoncom
 from win32com.client import Dispatch
-from win10toast import ToastNotifier
+from plyer import notification
 from pyttsx3 import init
+from pathlib import Path
 root = Tk()
 speaker = init()
 voices = speaker.getProperty('voices')
 speaker.setProperty('voice', voices[1].id)
 speaker.setProperty("rate", 160)
-system("cls")
 root.resizable(False, False)
 window_width = 600
 window_height = 420
 root.title("Remainder APP - Bidhan, Inc")
-root.iconbitmap("others\\a.ico")
+try:
+    root.iconbitmap("others\\a.ico")
+except:pass
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
 position_top = int(screen_height / 2 - window_height / 2)
@@ -251,26 +253,33 @@ def exitApp():
     running = False
     root.destroy()
 
+current_hour = strftime("%I")
+current_min = strftime("%M")
+current_noon = strftime("%p")
+
+hourVar.set(current_hour)
+minVar.set(current_min)
+ampmVar.set(current_noon)
 
 timeFrame = LabelFrame(root, text="Enter Time",
                        labelanchor="n", bd=0, bg="#008cff")
 timeFrame.place(x=300, y=60, width=300, height=80)
-
+##############
 hourSB = Spinbox(timeFrame, textvariable=hourVar, from_=1,
                  to=12, width=2, bd=0, font=("Arial", 20))
 hourSB.place(relx=0.10, rely=0.30, anchor=W)
 hourLabel = Label(timeFrame, text="   Hour", bd=0, bg="#008cff")
 hourLabel.place(relx=0.10, rely=0.90, anchor=SW)
-
+##################
 minuteSB = Spinbox(timeFrame, textvariable=minVar, from_=0,
                    to=59, width=2, bd=0, font=("Arial", 20))
 minuteSB.place(relx=0.50, rely=0.30, anchor=CENTER)
 minuteLabel = Label(timeFrame, text="Minute", bd=0, bg="#008cff")
 minuteLabel.place(relx=0.50, rely=0.90, anchor=S)
-
+#############################
 ampmEntry = Entry(timeFrame, textvariable=ampmVar,
                   width=3, font=("Arial", 20), bd=0)
-ampmEntry.insert(0, "AM")
+
 ampmEntry.place(relx=0.90, rely=0.30, anchor=E)
 ampmLabel = Label(timeFrame, text="AM/PM", bd=0, bg="#008cff")
 ampmLabel.place(relx=0.90, rely=0.90, anchor=SE)
@@ -344,9 +353,7 @@ def showNotification(thisIsCurrentTime):
     if voiceVar.get() == 1:
         talk(notificationBody)
     if notiVar.get() == 1:
-        toast = ToastNotifier()
-        toast.show_toast(notificationBody, notificationTitle,
-                         duration=6, icon_path="others\\a.ico")
+        notification.notify(title = notificationBody, message = notificationTitle,timeout = 10,app_icon = "others\\a.ico")
 
 
 def hideWindow():
