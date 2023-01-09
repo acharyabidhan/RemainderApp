@@ -6,7 +6,7 @@ from numpy import save, load
 from os import path, listdir, remove
 import pythoncom
 from win32com.client import Dispatch
-from plyer import notification
+from win10toast import ToastNotifier
 from pyttsx3 import init
 from pathlib import Path
 root = Tk()
@@ -353,7 +353,7 @@ def showNotification(thisIsCurrentTime):
     if voiceVar.get() == 1:
         talk(notificationBody)
     if notiVar.get() == 1:
-        notification.notify(title = notificationBody, message = notificationTitle,timeout = 10,app_icon = "others\\a.ico")
+        ToastNotifier().show_toast(notificationBody,notificationTitle, duration = 10,icon_path ="others\\a.ico")
 
 
 def hideWindow():
